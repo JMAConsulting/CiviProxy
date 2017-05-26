@@ -10,7 +10,7 @@ require_once "config.php";
 require_once "proxy.php";
 
 // basic restraints
-$valid_parameters = array( 'id'   => 'string', 'mosaico'  => 'int' );
+$valid_parameters = array( 'id'   => 'string', 'mosaico'  => 'int', 'social' => 'int' );
 $parameters = civiproxy_get_parameters($valid_parameters);
 // see if file caching is enabled
 if ((!$target_file && !$parameters['mosaico']) || (!$target_mosaico_file && $parameters['mosaico'])) {
@@ -69,6 +69,9 @@ if ($header && $data) {
 // if we get here, we have a cache miss => load
 if ($parameters['mosaico'] == 1) {
   $url = $target_mosaico_file . $parameters['id'];
+}
+elseif ($parameters['social'] == 1) {
+  $url = $social_icons . $parameters['id'];
 }
 else {
   $url = $target_file . $parameters['id'];

@@ -9,7 +9,7 @@
 
 require_once "config.php";
 $civiproxy_version = '0.3.2';
-$civiproxy_logo    = "<img src='{$proxy_base}/static/images/proxy-logo.png' alt='SYSTOPIA Organisationsberatung'></img>";
+$civiproxy_logo    = "<img src='{$proxy_base}/static/images/logo01.gif' alt='Yee Hong Center for Geriatric Care'></img>";
 
 /**
  * this will redirect the request to another URL,

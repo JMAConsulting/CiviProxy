@@ -31,10 +31,12 @@ $target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.ph
 $target_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
 $target_mail_view = $target_civicrm . '/civicrm/mailing/view';
 $target_mosaico_file = $target_civicrm . '/civicrm/mosaico/img?src=';
+$social_icons = $target_civicrm . '/sites/all/civicrm/extensions/uk.co.vedaconsulting.mosaico/packages/mosaico/templates/versafix-1/img/social_def/';
+
 
 // Set api-key for mail subscribe/unsubscribe user
 // Set to NULL/FALSE to disable the feature
-$mail_subscription_user_key = NULL;
+$mail_subscription_user_key = "hGHgY6yw";
 
 // CAREFUL: only enable temporarily on debug systems. Will log all queries to given PUBLIC file
 $debug                      = NULL; //'debug.log';
