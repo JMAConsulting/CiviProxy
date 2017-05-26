@@ -30,12 +30,11 @@ if (empty($parameters['h']))   civiproxy_http_error("Missing/invalid parameter '
 // PERFORM UNSUBSCRIBE
 $result = civicrm_api3('MailingEventQueue', 'get', array(
   'sequential' => 1,
-  'return' => array("contact_id"),
   'id' => $parameters['qid'],
   'api_key' => $mail_subscription_user_key,
 ));
 if ($result['count'] > 0) {
-  $contactId = $result['values']['contact_id'];
+  $contactId = $result['values'][0]['contact_id'];
 
   $group_query = civicrm_api3('Contact', 'create', array(
     'id' => $contactId,
