@@ -60,6 +60,7 @@ if (!empty($group_query['is_error'])) {
       margin-left: auto;
       margin-right: auto;
       width: 970px;
+      text-align: center;
     }
 
     p {
@@ -79,7 +80,7 @@ if (!empty($group_query['is_error'])) {
  <body>
   <div id="container">
     <div id="info" class="center">
-      <a href="https://www.systopia.de/"><?php echo $civiproxy_logo;?></a>
+      <a href="http://www.yeehong.com/"><?php echo $civiproxy_logo;?></a>
     </div>
     <div id="content" class="center">
       <p>Thank you. You have been successfully unsubscribed.</a>
