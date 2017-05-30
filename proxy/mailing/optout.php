@@ -10,8 +10,8 @@
 ini_set('include_path', dirname(dirname(__FILE__)));
 require_once "proxy.php";
 
-// see if mail open tracking is enabled
-if (!$mail_subscription_user_key) civiproxy_http_error("Feature disabled", 405);
+// see if mailing subscribe feature is enabled
+if (empty($mail_subscription_user_key)) civiproxy_http_error("Feature disabled", 405);
 
 // basic check
 civiproxy_security_check('mail-optout');
@@ -28,25 +28,15 @@ if (empty($parameters['qid'])) civiproxy_http_error("Missing/invalid parameter '
 if (empty($parameters['h']))   civiproxy_http_error("Missing/invalid parameter 'h'.");
 
 // PERFORM UNSUBSCRIBE
-$result = civicrm_api3('MailingEventQueue', 'get', array(
-  'sequential' => 1,
-  'id' => $parameters['qid'],
-  'api_key' => $mail_subscription_user_key,
-));
-if ($result['count'] > 0) {
-  $contactId = $result['values'][0]['contact_id'];
-
-  $group_query = civicrm_api3('Contact', 'create', array(
-    'id' => $contactId,
-    'is_opt_out' => TRUE,
-    'api_key' => $mail_subscription_user_key,
-  ));
-  if (!empty($group_query['is_error'])) {
-    civiproxy_http_error($group_query['error_message'], 500);
-  }
-}
-else {
-  civiproxy_http_error(ts("Invalid user."), 500);
+$group_query = civicrm_api3('MailingEventUnsubscribe', 'create', 
+                          array( 'job_id'         => $parameters['jid'],
+                                 'event_queue_id' => $parameters['qid'],
+                                 'hash'           => $parameters['h'],
+                                 'org_unsubscribe'=> TRUE,
+                                 'api_key'        => $mail_subscription_user_key,
+                                ));
+if (!empty($group_query['is_error'])) {
+  civiproxy_http_error($group_query['error_message'], 500);
 }
 ?>
 
@@ -86,7 +76,7 @@ else {
       text-align: center;
       width: 462px;
     }
-
+    
   </style>
  </head>
  <body>
