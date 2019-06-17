@@ -33,7 +33,6 @@ $target_mail_view = $target_civicrm . '/civicrm/mailing/view';
 $target_mosaico_file = $target_civicrm . '/civicrm/mosaico/img?src=';
 $social_icons = $target_civicrm . '/sites/all/civicrm/extensions/uk.co.vedaconsulting.mosaico/packages/mosaico/templates/versafix-1/img/social_def/';
 
-
 // Set api-key for mail subscribe/unsubscribe user
 // Set to NULL/FALSE to disable the feature
 $mail_subscription_user_key = "hGHgY6yw";

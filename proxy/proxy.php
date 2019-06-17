@@ -9,7 +9,7 @@
 
 require_once "config.php";
 $civiproxy_version = '0.3.2';
-$civiproxy_logo    = "<img src='{$proxy_base}/static/images/logo01.gif' alt='Yee Hong Center for Geriatric Care'></img>";
+$civiproxy_logo    = "<img src='{$proxy_base}/static/images/logo01.gif' alt='Yee Hong Center for geriatric care'></img>";
 
 /**
  * this will redirect the request to another URL,
@@ -253,5 +253,39 @@ function civicrm_api3($entity, $action, $data) {
   } else {
     return json_decode($response, true);
   }
+}
+
+function civiproxy_get_group($jid, $mail_subscription_user_key) {
+  $title = NULL;
+  $result = civicrm_api3('MailingJob', 'get', array(
+    'sequential' => 1,
+    'id' => $jid,
+    'api_key' => $mail_subscription_user_key,
+  ));
+
+  if ($result['count'] > 0) {
+    $mid = $result['values'][0]['mailing_id'];
+    $result = civicrm_api3('MailingGroup', 'get', array(
+      'sequential' => 1,
+      'group_type' => "Include",
+      'entity_table' => "civicrm_group_en_CA",
+      'mailing_id' => $mid,
+      'api_key' => $mail_subscription_user_key, 
+    ));
+
+    if ($result['count'] > 0) {
+      $gid = $result['values'][0]['entity_id'];
+      $result = civicrm_api3('Group', 'get', array(
+        'sequential' => 1,
+        'id' => $gid,
+        'api_key' => $mail_subscription_user_key,
+      ));
+
+      if ($result['count'] > 0) {
+        $title = $result['values'][0]['title'];
+      }
+    }
+  }
+  return $title;
 }
 

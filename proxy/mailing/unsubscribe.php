@@ -34,9 +34,14 @@ $group_query = civicrm_api3('MailingEventUnsubscribe', 'create',
                                  'hash'           => $parameters['h'],
                                  'api_key'        => $mail_subscription_user_key,
                                 ));
+
+// Get group name 
+$title = civiproxy_get_group($parameters['jid'], $mail_subscription_user_key);
+
 if (!empty($group_query['is_error'])) {
   civiproxy_http_error($group_query['error_message'], 500);
 }
+
 ?>
 
 
@@ -44,7 +49,7 @@ if (!empty($group_query['is_error'])) {
 <html>
  <head>
   <meta charset="UTF-8">
-  <title>CiviProxy Version <?php echo $civiproxy_version;?></title>
+  <title>Yee Hong Center for Geriatric Care</title>
   <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
   <style type="text/css">
     body {
@@ -75,6 +80,14 @@ if (!empty($group_query['is_error'])) {
       text-align: center;
       width: 462px;
     }
+  
+    .optout {
+      border-radius: 25px;
+      padding: 20px; 
+      width: 820px;
+      height: 195px;
+      border: grey solid 2px; 
+    }
     
   </style>
  </head>
@@ -84,7 +97,7 @@ if (!empty($group_query['is_error'])) {
       <a href="http://www.yeehong.com/"><?php echo $civiproxy_logo;?></a>
     </div>
     <div id="content" class="center">
-      <p>Thank you. You have been successfully unsubscribed.</a>
+      <p style="text-align:center">Thank you. You have been successfully unsubscribed from the newsletter <?php if ($title) echo $title; ?></p>
     </div>
   </div>
  </body>
