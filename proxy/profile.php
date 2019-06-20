@@ -3,6 +3,12 @@
 ini_set('include_path', dirname(dirname(__FILE__)));
 require_once "proxy.php";
 
+define('PROFILE_ID', 15);
+define('CONSENT', 5);
+define('MSG_ID_CONSENT', 68);
+define('MSG_ID_THANKS', 69);
+define('MSG_ID_REQUEST_CONSENT', 70);
+
 // basic restraints
 $valid_parameters = array(    'cid'          => 'int',
                               'cs'           => 'string');
@@ -20,6 +26,120 @@ $checksum = civicrm_api3('Checksum', 'validate',
 if (empty($checksum['values'][$parameters['cid']]['is_valid'])) {
   civiproxy_http_error("Invalid contact checksum.");
 }
+
+$email = civicrm_api3('Email', 'getvalue', [
+           'return' => 'email',
+           'contact_id' => $parameters['cid'],
+           'is_primary' => 1,
+           'api_key'    => $mail_subscription_user_key,
+         ])['result'];
+
+// Groups.
+$groups = civicrm_api3('GroupContact', 'get', [
+  'return' => ["group_id"],
+  'contact_id' => $parameters['cid'],
+  'status' => 'Added',
+  'api_key'    => $mail_subscription_user_key,
+])['values'];
+
+if (!empty($groups)) {
+  foreach ($groups as $group) {
+    $ids[] = "group_" . $group['group_id'];
+    $prev[] = $group['group_id']; 
+  }
+}
+
+if (!empty($ids)) {
+  $gids = json_encode($ids);
+}
+
+if (!empty($_POST)) {
+  if (!empty($_POST['group'])) {
+    $g = $_POST['group'];
+    foreach ($g as $gid => $sub) {
+      if ($sub) {
+        civicrm_api3('GroupContact', 'create', [
+          'contact_id' => $parameters['cid'],
+          'group_id' => $gid,
+          'status' => 'Added',
+          'api_key'    => $mail_subscription_user_key,
+        ]);
+        $title[] = civicrm_api3('Group', 'getvalue', [
+          'id' => $gid,
+          'return' => 'title',
+          'api_key'    => $mail_subscription_user_key,
+        ])['result'];
+      }
+      else {
+        if (in_array($gid, $prev)) {
+          civicrm_api3('GroupContact', 'create', [
+            'contact_id' => $parameters['cid'],
+            'group_id' => $gid,
+            'status' => 'Removed',
+            'api_key'    => $mail_subscription_user_key,
+          ]);
+        }
+      }
+    }
+  }
+
+  $activityParams = array( 
+    'activity_type_id' => 'Preferences Updated',
+    'subject' => 'Preferences have been updated',
+    'status_id' => 'Completed',
+    'activity_date_time' => date('YmdHis'),
+    'source_contact_id' => $parameters['cid'],
+    'target_contact_id' => $parameters['cid'],
+    'api_key'    => $mail_subscription_user_key,
+  );
+    
+  if (!empty($title)) {
+    //$form->assign('groupsContact', implode(',', $title));
+    $activityParams['details'] = "Campaigns selected: " . implode(', ', $title);
+  }
+  else {
+      //$form->assign('groupsContact', ts('No campaigns selected.'));
+    $activityParams['details'] = 'No campaigns selected.';
+  }
+  $o = civicrm_api3('Activity', 'create', $activityParams);
+    // Check if contact has consented previously.
+    $consent = civicrm_api3('Contact', 'get', [
+      'id' => $parameters['cid'],
+      'sequential' => 1,
+      'api_key'    => $mail_subscription_user_key,
+      'return' => 'custom_' . CONSENT
+    ])['values'];
+    $isSent = FALSE;
+    if (empty($consent[0]['custom_' . CONSENT])) {
+      // Send email since this is the first time of visit.
+      $email = civicrm_api3('Email', 'send', [
+        'contact_id' => $parameters['cid'],
+        'api_key'    => $mail_subscription_user_key,
+        'template_id' => MSG_ID_CONSENT,
+      ]);
+      $email = civicrm_api3('Email', 'send', [
+        'contact_id' => $parameters['cid'],
+        'api_key'    => $mail_subscription_user_key,
+        'template_id' => MSG_ID_THANKS,
+      ]);
+      $isSent = TRUE;
+      if (!$email['is_error']) {
+        civicrm_api3('CustomValue', 'create', [
+          'entity_id' => $parameters['cid'],
+          'api_key'    => $mail_subscription_user_key,
+          'custom_' . CONSENT => 1,
+        ]);
+      }
+    }
+    if (!$isSent) {
+      $email = civicrm_api3('Email', 'send', [
+        'contact_id' => $parameters['cid'],
+        'api_key'    => $mail_subscription_user_key,
+        'template_id' => MSG_ID_THANKS,
+      ]);
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -31,11 +151,24 @@ if (empty($checksum['values'][$parameters['cid']]['is_valid'])) {
     body {
       margin: 0;
       padding: 0;
+      font-family: Georgia, Helvetica, Arial, sans-serif;
     }
 
     .container {
         position: relative;
         width: 100%;
+    }
+
+    #info a {
+      font-size: 1.821em;
+      color: #fffeff;
+      line-height: 1;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      text-decoration: none;
+    }
+
+    #info a:hover {
+      text-decoration: underline;
     }
 
     .center {
@@ -55,6 +188,14 @@ if (empty($checksum['values'][$parameters['cid']]['is_valid'])) {
       vertical-align: top;
       text-align: center;
       width: 462px;
+      height: 50px;
+    }
+
+    h1 {
+      font-size: 2em;
+    line-height: 1;
+      font-weight: normal;
+      font-family: Georgia, "Times New Roman", Times, serif;
     }
   </style>
 <script type="text/javascript" src="sites/all/modules/civicrm/bower_components/jquery/dist/jquery.min.js?r=fyMo5">
@@ -125,9 +266,17 @@ if (empty($checksum['values'][$parameters['cid']]['is_valid'])) {
 </head>
 <body>
 <div id="container">
-    <div id="info" class="center">
-      <a href="http://www.yeehong.com/"><?php echo $civiproxy_logo;?></a>
+    <div id="info" class="center" style="background-color: rgb(0, 128, 98);background-image: none;width:auto;color:#fff">
+      <a href="http://www.yeehong.com/"><!--<?php echo $civiproxy_logo;?>-->Yee Hong Center</a>
     </div>
+<?php
+
+if (empty($_POST)) {
+print '<h1 style="text-align:center">Your Preferences</h1>';
+}
+
+?>
+
 
 <form method="post" name="Edit" id="Edit" class="CRM_Profile_Form_Edit" >
   
@@ -137,96 +286,17 @@ if (empty($checksum['values'][$parameters['cid']]['is_valid'])) {
 
 
     <div id="crm-container" class="crm-container crm-public" lang="en" xml:lang="en">
-  
-      <div id="editrow-email-Primary" class="crm-section editrow_email-Primary-section form-item"><div class="label"><label for="email-Primary">  Email
-     <span class="crm-marker" title="This field is required.">*</span>
 
-</label></div><div class="edit-value content"><input maxlength="254" size="30" name="email-Primary" type="text" id="email-Primary" class="big crm-form-text required" /></div><div class="clear"></div></div><div id="editrow-group" class="crm-section editrow_group-section form-item"><div class="label"><label>Campaign(s)</label></div><div class="edit-value content">    <table class="form-layout-compressed crm-profile-tagsandgroups">
+<?php 
+
+if (empty($_POST)) {
+  
+      echo '<div id="editrow-email-Primary" class="crm-section editrow_email-Primary-section form-item"><div class="label"><label for="email-Primary">  Email
+
+</label></div><div class="edit-value content">'; print $email; echo '<input maxlength="254" size="30" name="email-Primary" type="hidden" id="email-Primary" class="big crm-form-text required" value="'; print $email; echo '" /></div><div class="clear"></div></div><div id="editrow-group" class="crm-section editrow_group-section form-item"><div class="label"><label>Campaign(s)</label></div><div class="edit-value content">    <table class="form-layout-compressed crm-profile-tagsandgroups">
       <tr>
                           <td>
-                                          <div class="group-wrapper">
-                  <input type="hidden" name="group[1]" value="" /><input skiplabel="1" id="group_1" name="group[1]" type="checkbox" value="1" class="crm-form-checkbox" />Administrators
-                                      <div class="description">Contacts in this group are assigned Administrator role permissions.</div>
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[24]" value="" /><input skiplabel="1" id="group_24" name="group[24]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - BD Retirement Home Mailing
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[40]" value="" /><input skiplabel="1" id="group_40" name="group[40]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - BD Retirement Home Mailing (Individual)
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[46]" value="" /><input skiplabel="1" id="group_46" name="group[46]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Caregiver Support Services
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[14]" value="" /><input skiplabel="1" id="group_14" name="group[14]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Finch ASP
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[37]" value="" /><input skiplabel="1" id="group_37" name="group[37]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Finch ASP Unsubscribe
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[13]" value="" /><input skiplabel="1" id="group_13" name="group[13]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Finch Centre
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[38]" value="" /><input skiplabel="1" id="group_38" name="group[38]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Finch Centre Unsubscribe
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[15]" value="" /><input skiplabel="1" id="group_15" name="group[15]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Macrobian Club 
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[18]" value="" /><input skiplabel="1" id="group_18" name="group[18]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Markham Centre
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[16]" value="" /><input skiplabel="1" id="group_16" name="group[16]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - McNicoll Centre
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[19]" value="" /><input skiplabel="1" id="group_19" name="group[19]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Mississauga AS&O
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[17]" value="" /><input skiplabel="1" id="group_17" name="group[17]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Mississauga Centre
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[48]" value="" /><input skiplabel="1" id="group_48" name="group[48]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Volunteer Tutors
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[44]" value="" /><input skiplabel="1" id="group_44" name="group[44]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Yee Hong Care Ambassador
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[34]" value="" /><input skiplabel="1" id="group_34" name="group[34]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Yee Hong Markham Family Contacts
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[33]" value="" /><input skiplabel="1" id="group_33" name="group[33]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - Yee Hong Markham Newsletter
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[50]" value="" /><input skiplabel="1" id="group_50" name="group[50]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - YHGT Mailing
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[53]" value="" /><input skiplabel="1" id="group_53" name="group[53]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - YHVolunteer
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[20]" value="" /><input skiplabel="1" id="group_20" name="group[20]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - York Region Services Development
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[22]" value="" /><input skiplabel="1" id="group_22" name="group[22]" type="checkbox" value="1" class="crm-form-checkbox" />Contacts - York Region Services Development (Ad-hoc)
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[11]" value="" /><input skiplabel="1" id="group_11" name="group[11]" type="checkbox" value="1" class="crm-form-checkbox" />Pilot Group
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[12]" value="" /><input skiplabel="1" id="group_12" name="group[12]" type="checkbox" value="1" class="crm-form-checkbox" />Pilot Group 1
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[62]" value="" /><input skiplabel="1" id="group_62" name="group[62]" type="checkbox" value="1" class="crm-form-checkbox" />Test
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[10]" value="" /><input skiplabel="1" id="group_10" name="group[10]" type="checkbox" value="1" class="crm-form-checkbox" />Test JMA
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[55]" value="" /><input skiplabel="1" id="group_55" name="group[55]" type="checkbox" value="1" class="crm-form-checkbox" />Test Staging Group
-                                  </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[58]" value="" /><input skiplabel="1" id="group_58" name="group[58]" type="checkbox" value="1" class="crm-form-checkbox" />Unsubscribe Group
-                                  </div>
-                              <div class="group-wrapper">
+<div class="group-wrapper">
                   <input type="hidden" name="group[42]" value="" /><input skiplabel="1" id="group_42" name="group[42]" type="checkbox" value="1" class="crm-form-checkbox" />Yee Hong Care Ambassador
                                   </div>
                               <div class="group-wrapper">
@@ -271,28 +341,36 @@ if (empty($checksum['values'][$parameters['cid']]['is_valid'])) {
                               <div class="group-wrapper">
                   <input type="hidden" name="group[6]" value="" /><input skiplabel="1" id="group_6" name="group[6]" type="checkbox" value="1" class="crm-form-checkbox" />Yee Hong York Region Services Development
                                   </div>
-                              <div class="group-wrapper">
-                  <input type="hidden" name="group[52]" value="" /><input skiplabel="1" id="group_52" name="group[52]" type="checkbox" value="1" class="crm-form-checkbox" />YH Volunteer Testing
-                                  </div>
-                                    </td>
-              </tr>
-    </table>
-</div><div class="clear"></div></div><div class="crm-submit-buttons" style=''>                                      
+                         
+</div><div class="clear"></div></div><div class="crm-submit-buttons">                                      
                             
     <span class="crm-button crm-button-type-next crm-button_qf_Edit_next crm-i-button">
       <i class="crm-i fa-check"></i>
       <input class="crm-form-submit default validate" crm-icon="fa-check" name="_qf_Edit_next" value="Submit" type="submit" id="_qf_Edit_next" />
-    </span>
-  </div>
+    </span></div>';
+}
+else {
+  print '<h1 style="text-align:center">Your preferences have been updated!</h1><br/>';
+  if (!empty($title)) {
+    print '<div style="text-align:center">Campaign(s) selected: <div style="    text-align: left;align-items: center;display: flex;justify-content: center;"><ul><li>'. implode('</li><li>', $title) .'</li></ul></div></div>';
+  }
+  else {
+    print '<div style="text-align:center">No Campaign(s) selected</div>';
+  }
+}
+?>
 </div> 
-<script type="text/javascript">
-  </script>
   
 <script type="text/javascript">
 
 CRM.$(function($) {
-  cj('#selector tr:even').addClass('odd-row ');
-  cj('#selector tr:odd ').addClass('even-row');
+  var groups = <?php echo $gids; ?>;
+
+  if (groups) {
+    $(groups).each(function(index, val){
+      $("#" + val).prop("checked", true);
+    });
+  }
 });
 
 </script>
