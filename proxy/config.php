@@ -77,6 +77,9 @@ $file_cache_include = array(
  **                   REST API OPTIONS                         **
  ****************************************************************/
 $rest_allowed_actions = array(
+  'system' => array(
+     'check' => array(),
+  ),
   // this is an example:
   'Contact' => array(
       'getsingle'      => array(

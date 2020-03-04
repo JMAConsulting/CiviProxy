@@ -1,1 +1,1 @@
-Failed to connect to your.civicrm.installation.org port 443: Connection refused
+Could not resolve host: yhccivicrm.yeehong.com
