@@ -113,3 +113,28 @@ function civiproxy_civicrm_alterSettingsFolders(&$metaDataFolders = NULL){
     $metaDataFolders[] = $extDir;
   }
 }
+
+/* function civiproxy_civicrm_alterMailParams(&$params, $context) {
+  if (!empty($params)) {
+    $lookupParams = array(
+      'headers',
+      'subject',
+      'text',
+      'html',
+    );
+    foreach ($lookupParams as $name) {
+      if (empty($params[$name])) {
+        continue;
+      }
+      if ($name == 'headers' && is_array($params['headers']) && count($params['headers'])) {
+        foreach ($params['headers'] as &$header) {
+          CRM_CiviProxy_Mailer::mendURLs($header);
+        }
+      }
+      else {
+        CRM_CiviProxy_Mailer::mendURLs($params[$name]);
+      }
+    }
+  }
+}
+*/

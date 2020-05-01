@@ -10,8 +10,13 @@
 require_once "config.php";
 require_once "proxy.php";
 
+// basic restraints
+$valid_parameters = array( 'id'   => 'string', 'mosaico'  => 'int', 'social' => 'int' );
+$parameters = civiproxy_get_parameters($valid_parameters);
 // see if file caching is enabled
-if (!$target_file) civiproxy_http_error("Feature disabled", 405);
+if ((!$target_file && !$parameters['mosaico']) || (!$target_mosaico_file && $parameters['mosaico'])) {
+  civiproxy_http_error("Feature disabled", 405);
+}
 
 // basic check
 civiproxy_security_check('file');
@@ -68,7 +73,15 @@ if ($header && $data) {
 }
 
 // if we get here, we have a cache miss => load
-$url = $target_file . $parameters['id'];
+if ($parameters['mosaico'] == 1) {
+  $url = $target_mosaico_file . $parameters['id'];
+}
+elseif ($parameters['social'] == 1) {
+  $url = $social_icons . $parameters['id'];
+}
+else {
+  $url = $target_file . $parameters['id'];
+}
 // error_log("CACHE MISS. LOADING $url");
 
 $curlSession = curl_init();
@@ -76,7 +89,7 @@ curl_setopt($curlSession, CURLOPT_URL, $url);
 curl_setopt($curlSession, CURLOPT_HEADER, 1);
 curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
 curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
-curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
+curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
 if (!empty($target_interface)) {
   curl_setopt($curlSession, CURLOPT_INTERFACE, $target_interface);
 }
@@ -100,6 +113,13 @@ $body    = $content[1];
 
 // extract headers
 $header_lines = explode(chr(10), $header);
+
+// Remove chunked encoding header
+foreach ($header_lines as $k => $header_line) {
+  if(strpos($header_line,'Transfer-Encoding: chunked') !== FALSE) {
+    unset($header_lines[$k]);
+  }
+}
 
 // store the information in the cache
 $file_cache->save(json_encode($header_lines), $header_key);
