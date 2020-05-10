@@ -139,7 +139,7 @@ function civiproxy_mend_URLs(&$string) {
 function civiproxy_security_check($target, $quit=TRUE) {
   // verify that we're SSL encrypted
   if ($_SERVER['HTTPS'] != "on") {
-    civiproxy_http_error("This CiviProxy installation requires SSL encryption.", 400);
+    //civiproxy_http_error("This CiviProxy installation requires SSL encryption.", 400);
   }
 
   global $debug;

@@ -54,12 +54,14 @@ if (!file_exists($file_cache_options['cacheDir'])) mkdir($file_cache_options['ca
 require_once('Cache/Lite.php');
 $file_cache = new Cache_Lite($file_cache_options);
 
+
 // look up the required resource
 $header_key = 'header&' . $parameters['id'];
 $data_key   = 'data&'   . $parameters['id'];
 
 $header = $file_cache->get($header_key);
 $data   = $file_cache->get($data_key);
+
 
 if ($header && $data) {
   // error_log("CACHE HIT");
