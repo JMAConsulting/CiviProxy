@@ -56,13 +56,13 @@ class CRM_Civiproxy_Mailer {
     $value = preg_replace("#{$system_base}/wp-content/plugins/civicrm/civicrm/extern/url.php#i",  $proxy_base.'/url.php',      $value);
     $value = preg_replace("#{$system_base}/wp-content/plugins/civicrm/civicrm/extern/open.php#i", $proxy_base.'/open.php',     $value);
     $value = preg_replace("#{$system_base}/wp-content/uploads/civicrm/persist/#i",      $proxy_base.'/file.php?mosaico=0&id=', $value);
-    $value = preg_replace("#{$system_base}civicrm/\?civiwp=CiviCRM&q=civicrm%2Fmosaico%2Fimg&src=#i",                 $proxy_base.'/file.php?mosaico=1&id=', $value);
-    $value = preg_replace("#{$system_base}civicrm/\?civiwp=CiviCRM&amp;q=civicrm%2Fmosaico%2Fimg&amp;src=#i",                 $proxy_base.'/file.php?mosaico=1&id=', $value);
+    $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&q=civicrm%2Fmosaico%2Fimg&src=#i",                 $proxy_base.'/file.php?mosaico=1&id=', $value);
+    $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&amp;q=civicrm%2Fmosaico%2Fimg&amp;src=#i",                 $proxy_base.'/file.php?mosaico=1&id=', $value);
     $value = preg_replace("#{$system_base}/wp-content/uploads/civicrm/ext/uk.co.vedaconsulting.mosaico/packages/mosaico/templates/versafix-1/img/social_def/#i",      $proxy_base.'/file.php?social=1&id=', $value);
     $value = preg_replace("#{$system_base}/templates/versafix-1/img/social_def/#i",      $proxy_base.'/file.php?social=1&id=', $value); 
     // Mailing related functions
-    $value = preg_replace("#{$system_base}civicrm/\?civiwp=CiviCRM&q=civicrm%2Fmailing%2Fview#i",                      $proxy_base.'/mailing/mail.php', $value);
-    $value = preg_replace("#{$system_base}civicrm/\?civiwp=CiviCRM&amp;q=civicrm%2Fmailing%2Fview#i",                      $proxy_base.'/mailing/mail.php', $value);
+    $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&q=civicrm%2Fmailing%2Fview&#i",                      $proxy_base.'/mailing/mail.php?', $value);
+    $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&amp;q=civicrm%2Fmailing%2Fview&amp;#i",                      $proxy_base.'/mailing/mail.php?', $value);
     $custom_mailing_base = CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'custom_mailing_base');
     $other_mailing_functions = array('subscribe', 'confirm', 'unsubscribe', 'resubscribe', 'optout');
     foreach ($other_mailing_functions as $function) {
@@ -71,8 +71,8 @@ class CRM_Civiproxy_Mailer {
       } else {
         $new_url = "{$custom_mailing_base}/{$function}.php?";
       }
-      $value = preg_replace("#{$system_base}civicrm/\?civiwp=CiviCRM&q=civicrm%2Fmailing%2F{$function}&#i", $new_url, $value);
-      $value = preg_replace("#{$system_base}civicrm/\?civiwp=CiviCRM&amp;q=civicrm%2Fmailing%2F{$function}&amp;#i", $new_url, $value);
+      $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&q=civicrm%2Fmailing%2F{$function}&#i", $new_url, $value);
+      $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&amp;q=civicrm%2Fmailing%2F{$function}&amp;#i", $new_url, $value);
     }
     $value = html_entity_decode($value);
     $value = urldecode($value);
