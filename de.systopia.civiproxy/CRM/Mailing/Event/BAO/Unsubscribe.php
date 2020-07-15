@@ -426,7 +426,7 @@ WHERE  email = %2
     CRM_Mailing_BAO_Mailing::addMessageIdHeader($headers, 'u', $job, $queue_id, $eq->hash);
 
     $b = CRM_Utils_Mail::setMimeParams($message);
-    self::mendURLs($b);
+    CRM_CiviProxy_Mailer::mendURLs($b);
     $h = $message->headers($headers);
 
     $mailer = \Civi::service('pear_mail');
@@ -436,41 +436,6 @@ WHERE  email = %2
       $mailer->send($eq->email, $h, $b);
       unset($errorScope);
     }
-  }
-
-  /**
-   * This function will manipulate the URLs in Emails, so they point
-   *  to the correct proxy addresses
-   */
-  static function mendURLs(&$value) {
-    // check if the proxy is enabled
-    $enabled = CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'proxy_enabled');
-    if (!$enabled) return;
-
-    // get the URLs
-    $config      = CRM_Core_Config::singleton();
-    $system_base = $config->userFrameworkBaseURL;
-    $proxy_base  = CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'proxy_url');
-
-    // General external functions
-    $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/url.php#i",  $proxy_base.'/url.php',      $value);
-    $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/open.php#i", $proxy_base.'/open.php',     $value);
-    $value = preg_replace("#/sites/default/files/civicrm/persist/#i",      $proxy_base.'/file.php?mosaico=0&id=', $value);
-    $value = preg_replace("#/civicrm/mosaico/img\?src=#i",                 $proxy_base.'/file.php?mosaico=1&id=', $value);
-    $value = preg_replace("#templates/versafix-1/img/social_def/#i",      $proxy_base.'/file.php?social=1&id=', $value);
-    // Mailing related functions
-    $value = preg_replace("#{$system_base}civicrm/mailing/view#i",                      $proxy_base.'/mailing/mail.php', $value);
-    $custom_mailing_base = CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'custom_mailing_base');
-    $other_mailing_functions = array('subscribe', 'confirm', 'unsubscribe', 'resubscribe', 'optout');
-    foreach ($other_mailing_functions as $function) {
-      if (empty($custom_mailing_base)) {
-        $new_url = "{$proxy_base}/mailing/{$function}.php";
-      } else {
-        $new_url = "{$custom_mailing_base}/{$function}.php";
-      }
-      $value = preg_replace("#{$system_base}civicrm/mailing/{$function}#i", $new_url, $value);
-    }
-
   }
 
   /**
