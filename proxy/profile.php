@@ -129,6 +129,17 @@ if (!empty($_POST)) {
           'api_key'    => $mail_subscription_user_key,
           'custom_' . CONSENT => 1,
         ]);
+        $displayName = civicrm_api3('Contact', 'getvalue', ['return' => 'display_name', 'id' => $parameters['cid']])['result'];
+        $consentActivity = array(
+          'activity_type_id' => 'Consent Given',
+          'subject' => "Contact $displayName has granted consent",
+          'status_id' => 'Completed',
+          'activity_date_time' => date('YmdHis'),
+          'source_contact_id' => $parameters['cid'],
+          'target_contact_id' => $parameters['cid'],
+          'api_key'    => $mail_subscription_user_key,
+        );
+        civicrm_api3('Activity', 'create', $consentActivity);
       }
     }
     if (!$isSent) {
