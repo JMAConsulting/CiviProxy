@@ -116,13 +116,13 @@ function civiproxy_mend_URLs(&$string) {
     // https://github.com/systopia/CiviProxy/issues/38
     // fix for relative
     if ($target_mosaico) {
-      $string = preg_replace("#src=\"\/sites\/default\/files\/civicrm\/persist\/#", 'src="' . $proxy_base . '/file.php?id=', $string);
+      $string = preg_replace("#src=\"wp-content\/uploads\/civicrm\/persist\/contribute#", 'src="' . $proxy_base . '/file.php?id=', $string);
     }
   }
   if ($target_mosaico) {
     // replace full, and relative URL
     // $string = preg_replace("#{$target_mosaico}#",           $proxy_base . '/mosaico.php?id=', $string);
-    $string = preg_replace("#{$target_civicrm}/civicrm/mosaico/img\?src=#", $proxy_base . '/mosaico.php?id=', $string);
+    $string = preg_replace("#{$target_civicrm}/civicrm\?civiwp=CiviCRM&q=civicrm\/mosaico\/img&src=#", $proxy_base . '/mosaico.php?id=', $string);
   }
 }
 

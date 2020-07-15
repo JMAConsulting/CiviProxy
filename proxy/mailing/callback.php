@@ -4,7 +4,7 @@ $postfields = file_get_contents('php://input');
 ini_set('include_path', dirname(dirname(__FILE__)));
 require_once "proxy.php";
 
-$target = $target_civicrm . '?civiwp=CiviCRM&q=civicrm/sparkpost/callback';
+$target = $target_civicrm . 'civicrm?civiwp=CiviCRM&q=civicrm/sparkpost/callback';
 $curlSession = curl_init();
 curl_setopt($curlSession, CURLOPT_CUSTOMREQUEST,           "POST");
 curl_setopt($curlSession, CURLOPT_POSTFIELDS,     $postfields);
