@@ -129,6 +129,17 @@ if (!empty($_POST)) {
           'api_key'    => $mail_subscription_user_key,
           'custom_' . CONSENT => 1,
         ]);
+        $displayName = civicrm_api3('Contact', 'getvalue', ['return' => 'display_name', 'id' => $parameters['cid']])['result'];
+        $consentActivity = array(
+          'activity_type_id' => 'Consent Given',
+          'subject' => "Contact $displayName has granted consent",
+          'status_id' => 'Completed',
+          'activity_date_time' => date('YmdHis'),
+          'source_contact_id' => $parameters['cid'],
+          'target_contact_id' => $parameters['cid'],
+          'api_key'    => $mail_subscription_user_key,
+        );
+        civicrm_api3('Activity', 'create', $consentActivity);
       }
     }
     if (!$isSent) {
@@ -145,13 +156,14 @@ if (!empty($_POST)) {
 <html>
  <head>
   <meta charset="UTF-8">
-  <title>Yee Hong Center for Geriatric Care</title>
+  <title>Yee Hong Centre for Geriatric Care</title>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
 <style type="text/css">
     body {
       margin: 0;
       padding: 0;
       font-family: Georgia, Helvetica, Arial, sans-serif;
+      background-color: #ddffcc;
     }
 
     .container {
@@ -184,18 +196,24 @@ if (!empty($_POST)) {
     }
 
     #info {
-      padding-top: 20px;
+      padding-top: 25px;
       vertical-align: top;
       text-align: center;
       width: 462px;
       height: 50px;
+      padding-bottom: 25px;
     }
 
     h1 {
-      font-size: 2em;
-    line-height: 1;
+      font-size: 1.5em;
+      line-height: 1;
       font-weight: normal;
       font-family: Georgia, "Times New Roman", Times, serif;
+      padding-bottom: 10px;
+    }
+
+    label {
+      font-size: 1.2em;
     }
   </style>
 <script type="text/javascript" src="sites/all/modules/civicrm/bower_components/jquery/dist/jquery.min.js?r=fyMo5">
@@ -267,7 +285,7 @@ if (!empty($_POST)) {
 <body>
 <div id="container">
     <div id="info" class="center" style="background-color: rgb(0, 128, 98);background-image: none;width:auto;color:#fff">
-      <a href="http://www.yeehong.com/"><!--<?php echo $civiproxy_logo;?>-->Yee Hong Center</a>
+      <h1><a href="http://www.yeehong.com/"><!--<?php echo $civiproxy_logo;?>-->Yee Hong Centre</a></h1>
     </div>
 <?php
 
