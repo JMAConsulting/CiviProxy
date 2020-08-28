@@ -54,10 +54,10 @@ if (!empty($ids)) {
 }
 
 // Get list of groups for preferences.
-$preferences = civicrm_api3('PreferenceGroup', 'get', ['is_preference' => 1, 'sequential' => 1])['values'];
+$preferences = civicrm_api3('PreferenceGroup', 'getpreference', ['is_preference' => 1, 'sequential' => 1, 'api_key' => $mail_subscription_user_key])['values'];
 foreach ($preferences as $options) {
-  $gtitle = civicrm_api3('Group', 'getvalue', ['return' => 'title', 'id' => $options[0]['group_id']]);
-  $preferenceGroups[$options[0]['group_id']] = $gtitle;
+  $gtitle = civicrm_api3('Group', 'getvalue', ['return' => 'title', 'id' => $options['group_id'], 'api_key' => $mail_subscription_user_key]);
+  $preferenceGroups[$options['group_id']] = $gtitle;
 }
 
 if (!empty($_POST)) {
@@ -317,7 +317,7 @@ if (empty($_POST)) {
 ';
 
 foreach ($preferenceGroups as $id => $groupTitle) {
-  echo '<div class="group-wrapper"><input type="hidden" name="group[' . $id . ']" value="" /><input skiplabel="1" id="group_' . $id . '" name="group[' . $id . ']" type="checkbox" value="1" class="crm-form-checkbox" />' . $groupTitle . '</div>';
+  echo '<div class="group-wrapper"><input type="hidden" name="group[' . $id . ']" value="" /><input skiplabel="1" id="group_' . $id . '" name="group[' . $id . ']" type="checkbox" value="1" class="crm-form-checkbox" />' . $groupTitle['result'] . '</div>';
 }
                          
 echo '</div><div class="clear"></div></div><div class="crm-submit-buttons">                                      
