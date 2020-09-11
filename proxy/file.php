@@ -11,7 +11,7 @@ require_once "config.php";
 require_once "proxy.php";
 
 // basic restraints
-$valid_parameters = array( 'id'   => 'string', 'mosaico'  => 'int', 'social' => 'int' );
+$valid_parameters = array( 'id'   => 'string', 'mosaico'  => 'int', 'social' => 'int');
 $parameters = civiproxy_get_parameters($valid_parameters);
 // see if file caching is enabled
 if ((!$target_file && !$parameters['mosaico']) || (!$target_mosaico_file && $parameters['mosaico'])) {
@@ -22,8 +22,8 @@ if ((!$target_file && !$parameters['mosaico']) || (!$target_mosaico_file && $par
 civiproxy_security_check('file');
 
 // basic restraints
-$valid_parameters = array( 'id'   => 'string' );
-$parameters = civiproxy_get_parameters($valid_parameters);
+//$valid_parameters = array( 'id'   => 'string' );
+//$parameters = civiproxy_get_parameters($valid_parameters);
 
 // check if id specified
 if (empty($parameters['id'])) civiproxy_http_error("Resource not found");
@@ -76,7 +76,7 @@ if ($header && $data) {
 
 // if we get here, we have a cache miss => load
 if ($parameters['mosaico'] == 1) {
-  $url = $target_mosaico_file . $parameters['id'];
+  $url = $parameters['id'];
 }
 elseif ($parameters['social'] == 1) {
   $url = $social_icons . $parameters['id'];
@@ -85,7 +85,6 @@ else {
   $url = $target_file . $parameters['id'];
 }
 // error_log("CACHE MISS. LOADING $url");
-
 $curlSession = curl_init();
 curl_setopt($curlSession, CURLOPT_URL, $url);
 curl_setopt($curlSession, CURLOPT_HEADER, 1);

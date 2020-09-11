@@ -94,7 +94,7 @@ if (!empty($group_query['is_error'])) {
  <body>
   <div id="container">
     <div id="info" class="center">
-      <a href="http://www.yeehong.com/"><?php echo $civiproxy_logo;?></a>
+      <a href="https://www.yeehong.com/"><?php echo $civiproxy_logo;?></a>
     </div>
     <div id="content" class="center">
       <p style="text-align:center">Thank you. You have been successfully unsubscribed from the newsletter <?php if ($title) echo $title; ?></p>

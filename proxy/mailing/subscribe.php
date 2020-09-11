@@ -82,7 +82,7 @@ if (!empty($_REQUEST['email'])) {
 <html>
  <head>
   <meta charset="UTF-8">
-  <title>CiviProxy Version <?php echo $civiproxy_version;?></title>
+  <title>Yee Hong Center for Geriatric Care</title>
   <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
   <style type="text/css">
     body {
@@ -118,7 +118,7 @@ if (!empty($_REQUEST['email'])) {
  <body>
   <div id="container">
     <div id="info" class="center">
-      <a href="https://www.systopia.de/"><?php echo $civiproxy_logo;?></a>
+      <a href="https://www.yeehong.com/"><?php echo $civiproxy_logo;?></a>
       <p id="version">Subscribe to Newsletters</p>
     </div>
     <div id="content" class="center">
