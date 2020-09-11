@@ -426,7 +426,7 @@ WHERE  email = %2
     CRM_Mailing_BAO_Mailing::addMessageIdHeader($headers, 'u', $job, $queue_id, $eq->hash);
 
     $b = CRM_Utils_Mail::setMimeParams($message);
-    CRM_CiviProxy_Mailer::mendURLs($b);
+    CRM_Civiproxy_Mailer::mendURLs($b);
     $h = $message->headers($headers);
 
     $mailer = \Civi::service('pear_mail');

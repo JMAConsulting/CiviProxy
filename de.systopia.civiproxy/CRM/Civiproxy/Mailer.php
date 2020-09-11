@@ -31,9 +31,9 @@ class CRM_Civiproxy_Mailer {
    */
   function send($recipients, $headers, $body) {
     foreach ($headers as &$header) {
-      CRM_CiviProxy_Mailer::mendURLs($header);
+      CRM_Civiproxy_Mailer::mendURLs($header);
     }
-    CRM_CiviProxy_Mailer::mendURLs($body);
+    CRM_Civiproxy_Mailer::mendURLs($body);
     $this->mailer->send($recipients, $headers, $body);
   }
 

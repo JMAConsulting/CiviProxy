@@ -279,7 +279,7 @@ class CRM_Mailing_Event_BAO_Resubscribe {
     CRM_Mailing_BAO_Mailing::addMessageIdHeader($headers, 'e', $job, $queue_id, $eq->hash);
     $b = CRM_Utils_Mail::setMimeParams($message);
     $h = $message->headers($headers);
-    CRM_CiviProxy_Mailer::mendURLs($b);
+    CRM_Civiproxy_Mailer::mendURLs($b);
     $mailer = \Civi::service('pear_mail');
 
     if (is_object($mailer)) {
