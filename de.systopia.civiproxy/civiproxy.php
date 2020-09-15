@@ -32,11 +32,11 @@ function civiproxy_civicrm_alterMailParams(&$params, $context) {
       }
       if ($name == 'headers' && is_array($params['headers']) && count($params['headers'])) {
         foreach ($params['headers'] as &$header) {
-          CRM_CiviProxy_Mailer::mendURLs($header);
+          CRM_Civiproxy_Mailer::mendURLs($header);
         }
       }
       else {
-        CRM_CiviProxy_Mailer::mendURLs($params[$name]);
+        CRM_Civiproxy_Mailer::mendURLs($params[$name]);
       }
     }
   }
