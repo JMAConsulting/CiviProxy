@@ -55,15 +55,15 @@ class CRM_Civiproxy_Mailer {
     // General external functions
     $value = preg_replace("#{$system_base}/wp-content/plugins/civicrm/civicrm/extern/url.php#i",  $proxy_base.'/url.php',      $value);
     $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&q=civicrm%2Fmailing%2Furl#i",  $proxy_base.'/url.php',      $value);
-    $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&amp;q=civicrm%2Fmailing%2Furl#i",  $proxy_base.'/url.php',      $value);
+    $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&amp;q=civicrm%2Fmailing%2Furl&amp;#i",  $proxy_base.'/url.php?',      $value);
     $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&q=civicrm/mailing/url#i",  $proxy_base.'/url.php',      $value);
     $value = preg_replace("#{$system_base}/civicrm/mailing/url/#i",  $proxy_base.'/url.php',      $value);
-    $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&amp;q=civicrm/mailing/url#i",  $proxy_base.'/url.php',      $value);
+    $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&amp;q=civicrm/mailing/url&amp;#i",  $proxy_base.'/url.php?',      $value);
     $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&q=civicrm%2Fmailing%2Fopen#i",  $proxy_base.'/open.php',      $value);
-    $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&amp;q=civicrm%2Fmailing%2Fopen#i",  $proxy_base.'/open.php',      $value);
+    $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&amp;q=civicrm%2Fmailing%2Fopen&amp;#i",  $proxy_base.'/open.php?',      $value);
     $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&q=civicrm/mailing/open#i",  $proxy_base.'/open.php',      $value);
     $value = preg_replace("#{$system_base}/civicrm/mailing/open/#i",  $proxy_base.'/open.php',      $value);
-    $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&amp;q=civicrm/mailing/open#i",  $proxy_base.'/open.php',      $value);
+    $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&amp;q=civicrm/mailing/open&amp;#i",  $proxy_base.'/open.php?',      $value);
     $value = preg_replace("#{$system_base}/wp-content/plugins/civicrm/civicrm/extern/open.php#i", $proxy_base.'/open.php',     $value);
     $value = preg_replace("#{$system_base}/wp-content/uploads/civicrm/persist/#i",      $proxy_base.'/file.php?mosaico=0&id=', $value);
     $value = preg_replace("#{$system_base}/civicrm\?civiwp=CiviCRM&q=civicrm%2Fmosaico%2Fimg&src=#i",                 $proxy_base.'/file.php?mosaico=1&id=', $value);
