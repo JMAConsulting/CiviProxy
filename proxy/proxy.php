@@ -157,6 +157,10 @@ function civiproxy_security_check($target, $quit=TRUE) {
     civiproxy_log("REQUEST FROM " . $_SERVER['REMOTE_ADDR'] . " ON " . date('Y-m-d H:i:s') . ' -- ' . print_r($log_data ,1));
   }
 
+  if ($target == 'wp-version' && !in_array($_SERVER['REMOTE_ADDR'], ['192.99.28.88', '2607:5300:60:260c:100::'])) {
+    return FALSE;
+  }
+
   // TODO: implement
   return TRUE;
 }

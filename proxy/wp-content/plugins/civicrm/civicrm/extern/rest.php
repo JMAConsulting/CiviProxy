@@ -1,0 +1,1 @@
+/var/www/civiproxy/proxy/rest.php

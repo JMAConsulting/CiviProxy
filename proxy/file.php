@@ -76,7 +76,7 @@ if ($header && $data) {
 
 // if we get here, we have a cache miss => load
 if ($parameters['mosaico'] == 1) {
-  $url = $parameters['id'];
+  $url = $target_mosaico_file . $parameters['id'];
 }
 elseif ($parameters['social'] == 1) {
   $url = $social_icons . $parameters['id'];
