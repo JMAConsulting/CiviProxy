@@ -6,7 +6,6 @@
 | Author: B. Endres (endres -at- systopia.de)             |
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
-
 require_once "config.php";
 require_once "proxy.php";
 
@@ -42,7 +41,7 @@ if (empty($credentials['api_key'])) {
 }
 
 // check if the call itself is allowed
-$action = civiproxy_get_parameters(array('entity' => 'string', 'action' => 'string', 'version' => 'int', 'json' => 'int', 'sequential' => 'int'));
+$action = civiproxy_get_parameters(array('entity' => 'string', 'action' => 'string', 'version' => 'int', 'json' => 'string', 'sequential' => 'int'));
 if (!isset($action['version']) || $action['version'] != 3) {
   civiproxy_rest_error("API 'version' information missing.");
 }
