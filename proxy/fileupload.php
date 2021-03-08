@@ -45,15 +45,22 @@ foreach ($files as $key => $file) {
   $filesToDelete[] = $fileName; 
 }
 
-civicrm_api3('FormProcessor', 'volunteer_activity', [
+$activityParams = [
   'cid' => $cid,
   'tb_test' => $serverFiles['tb_test'],
-  'tb_test_date' => date('Y-m-d', strtotime($parameters->dates->tb_test)),
   'police_check' => $serverFiles['police_check'],
-  'police_check_date' => date('Y-m-d', strtotime($parameters->dates->police_check)),
   'first_aid' => $serverFiles['first_aid'],
   'api_key' => 'eeeddd',//$mail_subscription_user_key,
-]);
+];
+
+if (!empty($parameters->dates->tb_test)) {
+  $activityParams['tb_test_date'] = date('Y-m-d', strtotime($parameters->dates->tb_test));
+}
+
+if (!empty($parameters->dates->police_check)) {
+  $activityParams['police_check_date'] = date('Y-m-d', strtotime($parameters->dates->police_check));
+}
+civicrm_api3('FormProcessor', 'volunteer_activity', $activityParams);
 
 // Delete the files off the server.
 foreach ($filesToDelete as $file) {
