@@ -12,10 +12,10 @@
  **                            URLS                            **
  ****************************************************************/
 // this should point to the base address of the CiviProxy installation
-$proxy_base     = 'https://yeehong-wp-proxy.jmaconsulting.biz';
+$proxy_base     = 'https://staging.volunteer.yeehong.com';
 
 // this should point to the target CiviCRM system
-$target_civicrm = 'https://yhv.jmaconsulting.biz';
+$target_civicrm = 'http://staging.yhccivicrm.yeehong.com';
 
 
 /****************************************************************
@@ -35,7 +35,7 @@ $social_icons = $target_civicrm . '/wp-content/uploads/civicrm/ext/uk.co.vedacon
 
 // Set api-key for mail subscribe/unsubscribe user
 // Set to NULL/FALSE to disable the feature
-$mail_subscription_user_key = "hGHgY6yw";
+$mail_subscription_user_key = "eeeddd";
 
 // CAREFUL: only enable temporarily on debug systems. Will log all queries to given PUBLIC file
 $debug                      = 'debug.log';
@@ -155,6 +155,9 @@ $rest_allowed_actions = array(
       'json' => 'string',
     ),
     'contact_information' => array(
+      'json' => 'string',
+    ),
+    'volunteer_activity' => array(
       'json' => 'string',
     ),
   ),

@@ -16,7 +16,6 @@ $valid_parameters = [
 ];
 $parameters = civiproxy_get_parameters($valid_parameters);
 
-
 // check if parameters specified
 if (empty($parameters['fileparams']))   civiproxy_http_error("Missing/invalid parameter 'fileparams'.");
 $parameters = json_decode($parameters['fileparams']);
@@ -27,7 +26,7 @@ $contact = civicrm_api3('Contact', 'get', [
   'email' => $parameters->email,
   'api_key' => 'eeeddd',//$mail_subscription_user_key,
   'sequential' => 1,
-])['values'][0];
+]);
 
 if (!empty($contact['id'])) {
   $cid = $contact['id'];
@@ -37,12 +36,17 @@ else {
 }
 
 $files = (array) $parameters->files;
+$startup    =   microtime( true );
 
 foreach ($files as $key => $file) {
-  $fileName = getcwd() . '/yhvfiles/' . basename($file);
-  file_put_contents($fileName, file_get_contents($file));
-  $serverFiles[$key] = $proxy_base . '/yhvfiles/' . basename($file);
-  $filesToDelete[] = $fileName; 
+  if (empty($file)) {
+    continue;
+  }
+  //$fileName = getcwd() . '/yhvfiles/' . basename($file);
+  //file_put_contents($fileName, file_get_contents($file));
+  //$serverFiles[$key] = $proxy_base . '/yhvfiles/' . basename($file);
+  $serverFiles[$key] = $file;
+  //$filesToDelete[] = $fileName; 
 }
 
 $activityParams = [
@@ -60,12 +64,13 @@ if (!empty($parameters->dates->tb_test)) {
 if (!empty($parameters->dates->police_check)) {
   $activityParams['police_check_date'] = date('Y-m-d', strtotime($parameters->dates->police_check));
 }
+
 civicrm_api3('FormProcessor', 'volunteer_activity', $activityParams);
 
 // Delete the files off the server.
-foreach ($filesToDelete as $file) {
+/* foreach ($filesToDelete as $file) {
   unlink($file);	
-}
+} */
 
 
 /*$file_name = '/home/yeehong-wp-proxy.jmaconsulting.biz/htdocs/yhvdir/' . basename($_REQUEST['tb_test']); 
