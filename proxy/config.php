@@ -59,8 +59,8 @@ if (file_exists(dirname(__FILE__)."/secrets.php")) {
 
 // define file cache options, see http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php
 $file_cache_options = array(
-    'cacheDir' => 'file_cache/',
-    'lifeTime' => 86400
+  'cacheDir' => 'file_cache/',
+  'lifeTime' => 86400
 );
 
 // define regex patterns that shoud NOT be accepted
@@ -68,8 +68,8 @@ $file_cache_exclude = array();
 
 // if set, cached file must match at least one of these regex patterns
 $file_cache_include = array(
-        //'#.+[.](png|jpe?g|gif)#i'           // only media files
-    );
+  //'#.+[.](png|jpe?g|gif)#i'           // only media files
+);
 
 
 
@@ -78,56 +78,56 @@ $file_cache_include = array(
  ****************************************************************/
 $rest_allowed_actions = array(
   'system' => array(
-     'check' => array(),
+    'check' => array(),
   ),
   // this is an example:
   'Contact' => array(
-      'getsingle'      => array(
-                            'email' => 'string'
-                            ),
-      'getwpuser' => array(
-        'username' => 'string',
-        'password' => 'string',
-        'json' => 'string',
-      ),
-      'createwpuser' => array(
-        'cid' => 'int',
-	'email' => 'string',
-	'first_name' => 'string',
-	'last_name' => 'string',
-        'json' => 'string',	
-      ),
-      'getvalue' => array(
-        'contact_id' => 'int',
-      ),
-      'wpresetpassword' => array(
-        'username' => 'string',	      
-	'password' => 'string',
-	'key' => 'string',
-      ),
-      'validateusername' => array(
-        'username' => 'string',
-      ),
-      'validateemail' => array(
-        'email' => 'string',
-      ),
-      'validatevolunteeremail' => array(
-        'email' => 'string',
-	'cid' => 'string',
-      ),
-      'sendpasswordresetlink' => array(
-        'username' => 'string',
-      ),
-      'getvolunteer' => array(
-        'cid' => 'int',
-      ),
-      'get' => array(
-        'first_name' => 'string',
-	'last_name' => 'string',
-	'email' => 'string',
-	'json' => 'string',
-      ),
+    'getsingle'      => array(
+      'email' => 'string'
     ),
+    'getwpuser' => array(
+      'username' => 'string',
+      'password' => 'string',
+      'json' => 'string',
+    ),
+    'createwpuser' => array(
+      'cid' => 'int',
+      'email' => 'string',
+      'first_name' => 'string',
+      'last_name' => 'string',
+      'json' => 'string',
+    ),
+    'getvalue' => array(
+      'contact_id' => 'int',
+    ),
+    'wpresetpassword' => array(
+      'username' => 'string',
+      'password' => 'string',
+      'key' => 'string',
+    ),
+    'validateusername' => array(
+      'username' => 'string',
+    ),
+    'validateemail' => array(
+      'email' => 'string',
+    ),
+    'validatevolunteeremail' => array(
+      'email' => 'string',
+      'cid' => 'string',
+    ),
+    'sendpasswordresetlink' => array(
+      'username' => 'string',
+    ),
+    'getvolunteer' => array(
+      'cid' => 'int',
+    ),
+    'get' => array(
+      'first_name' => 'string',
+      'last_name' => 'string',
+      'email' => 'string',
+      'json' => 'string',
+    ),
+  ),
   'Yhvsignup' => array (
     'getshifts' => array(
       'json' => 'string',
@@ -162,7 +162,7 @@ $rest_allowed_actions = array(
     ),
   ),
   'FormProcessorInstancelist' => array(
-    'list' => array(),    
+    'list' => array(),
   ),
   'FormProcessorDefaults' => array(
     'getfields' => array(),
@@ -181,5 +181,5 @@ $rest_allowed_actions = array(
       'json' => 'string',
     ),
   ),
-  );
+);
 

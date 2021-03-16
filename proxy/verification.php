@@ -29,10 +29,10 @@ $serverFiles = [
 ];
 
 foreach ($files as $key => $file) {
-  $fileName = getcwd() . '/yhvfiles/' . basename($file);
-  file_put_contents($fileName, file_get_contents($file));
-  $serverFiles[$key] = $proxy_base . '/yhvfiles/' . basename($file);
-  $filesToDelete[] = $fileName; 
+ // $fileName = getcwd() . '/yhvfiles/' . basename($file);
+ // file_put_contents($fileName, file_get_contents($file));
+  $serverFiles[$key] = $file;
+ // $filesToDelete[] = $fileName;
 }
 
 $ff = civicrm_api3('FormProcessor', $parameters->type, [
@@ -46,7 +46,7 @@ $ff = civicrm_api3('FormProcessor', $parameters->type, [
 ]);
 
 // Delete the files off the server.
-foreach ($filesToDelete as $file) {
+/* foreach ($filesToDelete as $file) {
   unlink($file);        
-}
+} */
 

@@ -36,7 +36,6 @@ else {
 }
 
 $files = (array) $parameters->files;
-$startup    =   microtime( true );
 
 foreach ($files as $key => $file) {
   if (empty($file)) {
