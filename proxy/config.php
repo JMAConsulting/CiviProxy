@@ -12,10 +12,10 @@
  **                            URLS                            **
  ****************************************************************/
 // this should point to the base address of the CiviProxy installation
-$proxy_base     = 'https://staging.volunteer.yeehong.com';
+$proxy_base     = 'https://yhccrm.yeehong.com';
 
 // this should point to the target CiviCRM system
-$target_civicrm = 'http://staging.yhccivicrm.yeehong.com';
+$target_civicrm = 'http://yhccivicrm.yeehong.com';
 
 
 /****************************************************************

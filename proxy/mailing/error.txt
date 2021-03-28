@@ -1,1 +1,1 @@
-Could not resolve host: yeehong-wp.jmaconsulting.bizcivicrm
+Could not resolve host: yhccivicrm.yeehong.comcivicrm
