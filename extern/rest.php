@@ -1,1 +1,1 @@
-/var/www/civiproxy/proxy/rest.php
+../proxy/rest.php
