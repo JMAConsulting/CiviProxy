@@ -10,6 +10,7 @@
 require_once "config.php";
 require_once "proxy.php";
 
+$target_wp_version = $target_civicrm . '/wp-version.php';
 // see if mail open tracking is enabled
 if (!$target_wp_version) {
   civiproxy_http_error("Feature disabled", 405);
