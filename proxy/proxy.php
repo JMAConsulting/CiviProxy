@@ -48,7 +48,6 @@ function civiproxy_redirect($url_requested, $parameters) {
   if (strpos($url, 'mailing/open') !== false) {
     $url = str_replace('q=', 'qid=', $url);
   }
-  file_put_contents('param.txt', serialize($url));
 
   curl_setopt($curlSession, CURLOPT_URL, $url);
   curl_setopt($curlSession, CURLOPT_HEADER, 1);
