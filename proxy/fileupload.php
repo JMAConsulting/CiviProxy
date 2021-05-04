@@ -21,10 +21,10 @@ if (empty($parameters['fileparams']))   civiproxy_http_error("Missing/invalid pa
 $parameters = json_decode($parameters['fileparams']);
 
 $contact = civicrm_api3('Contact', 'get', [
-  'first_name' => $parameters->first_name,
-  'last_name' => $parameters->last_name,
-  'email' => $parameters->email,
-  'api_key' => 'eeeddd',//$mail_subscription_user_key,
+  'first_name' => urldecode($parameters->first_name),
+  'last_name' => urldecode($parameters->last_name),
+  'email' => urldecode($parameters->email),
+  'api_key' => 'hGHgY6yw',//$mail_subscription_user_key,
   'sequential' => 1,
 ]);
 
@@ -32,7 +32,7 @@ if (!empty($contact['id'])) {
   $cid = $contact['id'];
 }
 else {
-  civiproxy_http_error("No contact found.");
+  civiproxy_http_error("No contacts found.");
 }
 
 $files = (array) $parameters->files;
@@ -53,7 +53,7 @@ $activityParams = [
   'tb_test' => $serverFiles['tb_test'],
   'police_check' => $serverFiles['police_check'],
   'first_aid' => $serverFiles['first_aid'],
-  'api_key' => 'eeeddd',//$mail_subscription_user_key,
+  'api_key' => 'hGHgY6yw',//$mail_subscription_user_key,
 ];
 
 if (!empty($parameters->dates->tb_test)) {

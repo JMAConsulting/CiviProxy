@@ -15,7 +15,7 @@
 $proxy_base     = 'https://yhccrm.yeehong.com';
 
 // this should point to the target CiviCRM system
-$target_civicrm = 'http://yhccivicrm.yeehong.com';
+$target_civicrm = 'https://yhccivicrm.yeehong.com';
 
 
 /****************************************************************
@@ -35,7 +35,7 @@ $social_icons = $target_civicrm . '/wp-content/uploads/civicrm/ext/uk.co.vedacon
 
 // Set api-key for mail subscribe/unsubscribe user
 // Set to NULL/FALSE to disable the feature
-$mail_subscription_user_key = "eeeddd";
+$mail_subscription_user_key = "hGHgY6yw";
 
 // CAREFUL: only enable temporarily on debug systems. Will log all queries to given PUBLIC file
 $debug                      = 'debug.log';

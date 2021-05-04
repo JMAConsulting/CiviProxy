@@ -42,7 +42,7 @@ $ff = civicrm_api3('FormProcessor', $parameters->type, [
   'police_check_reimbursement' => $serverFiles['police_check_reimbursement'],
   'first_aid' => $serverFiles['first_aid'],
   'activity_date' => date('Y-m-d', strtotime($parameters->activity_date)),
-  'api_key' => 'eeeddd',//$mail_subscription_user_key,
+  'api_key' => 'hGHgY6yw',//$mail_subscription_user_key,
 ]);
 
 // Delete the files off the server.
